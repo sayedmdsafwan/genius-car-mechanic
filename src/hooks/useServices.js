@@ -9,7 +9,7 @@ const useServices = () => {
             .then((data) => setServices(data));
     }, []);
 
-    return [services];
+    return [services, setServices];
 };
 
 export default useServices;
