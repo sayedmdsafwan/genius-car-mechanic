@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import auth from "../../firebase.init";
 import useServiceDetail from "../../hooks/useServiceDetail";
@@ -19,13 +19,15 @@ const Checkout = () => {
             address: event.target.address.value,
             phone: event.target.phone.value,
         };
-        axios.post("http://localhost:4000/order", order).then((response) => {
-            const { data } = response;
-            if (data.insertedId) {
-                toast("Your order is booked");
-                event.target.reset();
-            }
-        });
+        axios
+            .post("https://arcane-scrubland-06380.herokuapp.com/order", order)
+            .then((response) => {
+                const { data } = response;
+                if (data.insertedId) {
+                    toast("Your order is booked");
+                    event.target.reset();
+                }
+            });
     };
 
     return (

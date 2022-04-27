@@ -10,6 +10,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import auth from "../../../firebase.init";
 import Loading from "../../Shared/Loading/Loading";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import axios from "axios";
 
 const Login = () => {
     const [signInWithEmailAndPassword, user, loading, error] =
@@ -22,11 +23,24 @@ const Login = () => {
 
     let from = location.state?.from?.pathname || "/";
 
-    const handleSubmit = (event) => {
+    const navigateRegister = () => {
+        navigate("/register");
+    };
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
-        signInWithEmailAndPassword(email, password);
+        await signInWithEmailAndPassword(email, password);
+        const { data } = await axios.post(
+            "https://arcane-scrubland-06380.herokuapp.com/login",
+            {
+                email,
+            }
+        );
+
+        localStorage.setItem("accessToken", data.accessToken);
+        navigate(from, { replace: true });
     };
 
     let errorElement;
@@ -47,12 +61,6 @@ const Login = () => {
             toast("Please enter your email address");
         }
     };
-
-    const navigateRegister = () => {
-        navigate("/register");
-    };
-
-    user && navigate(from, { replace: true });
 
     if (loading || sending) {
         return <Loading></Loading>;
